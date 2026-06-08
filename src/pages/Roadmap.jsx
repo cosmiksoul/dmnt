@@ -35,7 +35,7 @@ export default function Roadmap() {
         <p className="mt-1 text-sm text-ink-muted">Куда растёт инструмент — от демо к полноценному сервису с реестром.</p>
       </header>
 
-      <ol className="relative ml-2 space-y-4 border-l-2 border-line pl-6">
+      <ol aria-label="Фазы развития" className="relative ml-2 space-y-4 border-l-2 border-line pl-6">
         {PHASES.map((p) => (
           <li key={p.tag} className="relative">
             <span
@@ -53,7 +53,7 @@ export default function Roadmap() {
                 >
                   {p.tag}
                 </span>
-                <h2 className="text-sm font-semibold">{p.title}</h2>
+                <p className="text-sm font-semibold">{p.title}</p>
               </div>
               <p className="text-sm leading-relaxed text-ink-soft">{p.body}</p>
             </div>

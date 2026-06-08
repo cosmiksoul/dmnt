@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildL1, buildL2, buildL3, buildMediaCompound } from '../../src/lib/buildNames.js'
+import { buildL1, buildL2, buildL3, buildMediaCompound, buildCreativePackage } from '../../src/lib/buildNames.js'
 
 describe('buildL1', () => {
   it('builds base L1 without campaign', () => {
@@ -49,5 +49,28 @@ describe('buildMediaCompound', () => {
     }
     expect(buildMediaCompound(v))
       .toBe('CP_PF_CAS_RTG_BY_UzeSlishali|DSP_MOB_W2W_DIR_Feed|ChickenRoad100500_V1_dmt_0126')
+  })
+})
+
+describe('buildCreativePackage', () => {
+  it('packs full L1/L2/L3 into canonical (|) and filename (-) forms', () => {
+    const v = {
+      status: 'CP', objective: 'PF', product: 'CAS', audience: 'RTG', geo: 'BY', campaign: 'UzeSlishali',
+      format: 'DSP', device: 'MOB', flow: 'W2W', placement: 'DIR', targeting: 'Feed',
+      theme: 'ChickenRoad100500', variant: 'V1', source: 'dmt', date: '0126',
+    }
+    expect(buildCreativePackage(v)).toEqual({
+      canonical: 'CP_PF_CAS_RTG_BY_UzeSlishali|DSP_MOB_W2W_DIR_Feed|ChickenRoad100500_V1_dmt_0126',
+      filename: 'CP_PF_CAS_RTG_BY_UzeSlishali-DSP_MOB_W2W_DIR_Feed-ChickenRoad100500_V1_dmt_0126',
+    })
+  })
+
+  it('drops empty levels in both forms', () => {
+    const v = { status: 'TC', objective: 'PF', product: 'CAS', audience: 'ACQ', geo: 'BY' }
+    expect(buildCreativePackage(v)).toEqual({ canonical: 'TC_PF_CAS_ACQ_BY', filename: 'TC_PF_CAS_ACQ_BY' })
+  })
+
+  it('returns empty strings when nothing is filled', () => {
+    expect(buildCreativePackage({})).toEqual({ canonical: '', filename: '' })
   })
 })

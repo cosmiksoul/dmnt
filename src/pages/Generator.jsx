@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { L0, L1_FIELDS, L2_FIELDS, L3_FIELDS } from '../config/convention.js'
 import { buildL1, buildL2, buildL3, buildMediaCompound } from '../lib/buildNames.js'
 import { validate } from '../lib/validate.js'
@@ -10,9 +11,22 @@ import ResetButton from '../components/ResetButton.jsx'
 const L0_FIELD = [{ key: 'l0', label: 'Платформа', kind: 'enum', options: 'l0', required: true }]
 
 export default function Generator() {
+  const navigate = useNavigate()
   const [values, setValues] = useSessionState('generator:values', {})
   const onChange = (key, val) => setValues((v) => ({ ...v, [key]: val }))
   const reset = () => setValues({})
+
+  // Carry the convention params (L0–L3) over to the URL builder, where only
+  // landing + promocode remain to be picked. We seed the URL builder's session
+  // key directly; it reads that key when it mounts.
+  const toUrlBuilder = () => {
+    try {
+      sessionStorage.setItem('url:values', JSON.stringify(values))
+    } catch {
+      /* storage unavailable — UrlBuilder just opens empty */
+    }
+    navigate('/url')
+  }
 
   const issues = validate(values)
   const blocked = issues.some((i) => i.severity === 'error')
@@ -23,6 +37,7 @@ export default function Generator() {
   const l2 = buildL2(values)
   const l3 = buildL3(values)
   const all = [values.l0 || '', l1, l2, l3].filter(Boolean).join(', ')
+  const hasInput = Object.values(values).some((v) => (v ?? '').toString().trim() !== '')
 
   return (
     <div>
@@ -55,7 +70,21 @@ export default function Generator() {
               <NamePreview label="ВСЁ" value={all} disabled={blocked} wrap />
             </div>
           </ResultsPanel>
-          <div className="mt-3 flex justify-end">
+
+          <button
+            type="button"
+            onClick={toUrlBuilder}
+            disabled={!hasInput}
+            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-bright disabled:cursor-not-allowed disabled:bg-ink-faint"
+          >
+            Перенести в URL-билдер
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </button>
+
+          <div className="mt-2 flex justify-end">
             <ResetButton onClick={reset}>Начать сначала</ResetButton>
           </div>
         </aside>

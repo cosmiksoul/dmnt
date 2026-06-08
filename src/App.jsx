@@ -4,6 +4,7 @@ import Generator from './pages/Generator.jsx'
 import UrlBuilder from './pages/UrlBuilder.jsx'
 import Validator from './pages/Validator.jsx'
 import Methodology from './pages/Methodology.jsx'
+import Reference from './pages/Reference.jsx'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="url" element={<UrlBuilder />} />
           <Route path="validator" element={<Validator />} />
           <Route path="methodology" element={<Methodology />} />
+          <Route path="reference" element={<Reference />} />
         </Route>
       </Routes>
     </HashRouter>

@@ -1,4 +1,4 @@
-import { OPTIONS } from '../config/convention.js'
+import { OPTIONS, L0 } from '../config/convention.js'
 import FieldSelect from './FieldSelect.jsx'
 import FieldCamelText from './FieldCamelText.jsx'
 
@@ -9,7 +9,8 @@ export default function LevelSection({ title, fields, values, onChange }) {
       <div className="grid grid-cols-2 gap-3">
         {fields.map((f) => {
           if (f.kind === 'enum') {
-            return <FieldSelect key={f.key} field={{ ...f, opts: OPTIONS[f.options] }} value={values[f.key]} onChange={onChange} />
+            const opts = f.options === 'l0' ? L0.map((x) => ({ code: x.code, desc: x.label })) : OPTIONS[f.options]
+            return <FieldSelect key={f.key} field={{ ...f, opts }} value={values[f.key]} onChange={onChange} />
           }
           if (f.kind === 'date') {
             return (

@@ -2,6 +2,11 @@ import { useState } from 'react'
 import { parseName } from '../lib/parseName.js'
 
 const LEVELS = ['L1', 'L2', 'L3']
+const PLACEHOLDER = {
+  L1: 'TC_PF_CAS_ACQ_BY',
+  L2: 'DSP_MOB_W2W_DIR_Feed',
+  L3: 'GatesOfOlympus100500_V1_dmt',
+}
 
 export default function Validator() {
   const [level, setLevel] = useState('L1')
@@ -10,40 +15,65 @@ export default function Validator() {
   const entries = Object.entries(fields)
 
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-slate-500">Вставьте существующее имя — разберём на поля и проверим по конвенции.</p>
-      <div className="flex gap-2">
-        {LEVELS.map((l) => (
-          <button key={l} onClick={() => setLevel(l)}
-            className={`rounded border px-3 py-1 text-sm ${level === l ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-            {l}
-          </button>
-        ))}
-      </div>
-      <input className="w-full rounded border border-slate-300 px-3 py-2 font-mono text-sm"
-        placeholder={level === 'L1' ? 'TC_PF_CAS_ACQ_BY' : level === 'L2' ? 'DSP_MOB_W2W_DIR_Feed' : 'GatesOfOlympus100500_V1_dmt'}
-        value={input} onChange={(e) => setInput(e.target.value)} />
+    <div className="mx-auto max-w-2xl">
+      <header className="mb-6">
+        <h1 className="text-xl font-bold tracking-tight">Валидатор</h1>
+        <p className="mt-1 text-sm text-ink-muted">
+          Вставьте существующее имя — разберём на поля и проверим по конвенции.
+        </p>
+      </header>
 
-      {input && (
-        <section className="rounded-lg border bg-white p-4">
-          <h2 className="mb-2 text-sm font-semibold text-slate-700">Разбор</h2>
-          <table className="w-full text-sm">
-            <tbody>
-              {entries.map(([k, val]) => (
-                <tr key={k} className="border-b last:border-0">
-                  <td className="py-1 pr-4 text-slate-500">{k}</td>
-                  <td className="py-1 font-mono">{val || <span className="text-slate-300">—</span>}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {errors.length > 0 ? (
-            <ul className="mt-3 space-y-1 text-xs text-red-600">{errors.map((e, i) => <li key={i}>• {e}</li>)}</ul>
-          ) : (
-            <p className="mt-3 text-xs text-green-600">✓ Соответствует конвенции.</p>
-          )}
-        </section>
-      )}
+      <div className="card space-y-4 p-5">
+        <div className="inline-flex rounded-lg border border-line bg-paper p-1">
+          {LEVELS.map((l) => (
+            <button
+              key={l}
+              onClick={() => setLevel(l)}
+              className={`rounded-md px-4 py-1 font-mono text-sm font-semibold transition-colors ${
+                level === l ? 'bg-surface text-accent shadow-sm' : 'text-ink-muted hover:text-ink'
+              }`}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+
+        <input
+          className="field-control font-mono"
+          placeholder={PLACEHOLDER[level]}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+
+        {input && (
+          <div className="space-y-3 border-t border-line pt-4">
+            <table className="w-full text-sm">
+              <tbody>
+                {entries.map(([k, val]) => (
+                  <tr key={k} className="border-b border-line last:border-0">
+                    <td className="py-1.5 pr-4 font-mono text-xs uppercase tracking-wide text-ink-faint">{k}</td>
+                    <td className="py-1.5 font-mono text-ink">{val || <span className="text-ink-faint">—</span>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {errors.length > 0 ? (
+              <ul className="space-y-1 text-xs text-danger">
+                {errors.map((e, i) => (
+                  <li key={i} className="flex gap-1.5">
+                    <span aria-hidden>⚠</span>
+                    <span>{e}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="flex items-center gap-1.5 text-sm font-medium text-accent">
+                <span aria-hidden>✓</span>Соответствует конвенции
+              </p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

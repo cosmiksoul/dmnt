@@ -1,15 +1,20 @@
 export default function FieldSelect({ field, value, onChange }) {
   return (
-    <label className="block text-sm">
-      <span className="text-slate-600">{field.label}{field.required && ' *'}</span>
+    <label className="block">
+      <span className="field-label">
+        {field.label}
+        {field.required && <span className="text-accent"> *</span>}
+      </span>
       <select
-        className="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5"
+        className="field-control"
         value={value || ''}
         onChange={(e) => onChange(field.key, e.target.value)}
       >
         <option value="">{field.required ? '— выберите —' : '— не задано —'}</option>
         {field.opts.map((o) => (
-          <option key={o.code} value={o.code}>{o.code} — {o.desc}</option>
+          <option key={o.code} value={o.code}>
+            {o.code} — {o.desc}
+          </option>
         ))}
       </select>
     </label>

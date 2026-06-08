@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { L1_FIELDS, L2_FIELDS, L3_FIELDS } from '../config/convention.js'
 import { LANDINGS, promocodeFor } from '../data/landings.sample.js'
 import { buildUrl } from '../lib/buildUrl.js'
@@ -11,6 +12,7 @@ import ResetButton from '../components/ResetButton.jsx'
 const L0_FIELD = [{ key: 'l0', label: 'Платформа', kind: 'enum', options: 'l0', required: true }]
 
 export default function UrlBuilder() {
+  const navigate = useNavigate()
   const [values, setValues] = useSessionState('url:values', {})
   const [landing, setLanding] = useSessionState('url:landing', '')
   const onChange = (key, val) => setValues((v) => ({ ...v, [key]: val }))
@@ -23,6 +25,17 @@ export default function UrlBuilder() {
   const issues = validate(values)
   const blocked = issues.some((i) => i.severity === 'error') || !values.l0 || !landing
   const url = blocked ? '' : buildUrl(values, landing, promocode)
+
+  // Hand the assembled URL off to the Validator (URL mode), mirroring the
+  // Generator -> URL-builder transfer. The Validator reads this key on mount.
+  const toValidator = () => {
+    try {
+      sessionStorage.setItem('validator:url', url)
+    } catch {
+      /* storage unavailable — Validator just opens empty */
+    }
+    navigate('/validator')
+  }
   const extraMissing = [...(values.l0 ? [] : ['Платформа']), ...(landing ? [] : ['Лендинг'])]
 
   return (
@@ -75,7 +88,21 @@ export default function UrlBuilder() {
           <ResultsPanel title="Трекинг-URL" issues={issues} extraMissing={extraMissing}>
             <NamePreview label="URL" value={url} disabled={blocked} wrap />
           </ResultsPanel>
-          <div className="mt-3 flex justify-end">
+
+          <button
+            type="button"
+            onClick={toValidator}
+            disabled={blocked}
+            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-bright disabled:cursor-not-allowed disabled:bg-ink-faint"
+          >
+            Проверить в валидаторе
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </button>
+
+          <div className="mt-2 flex justify-end">
             <ResetButton onClick={reset}>Начать сначала</ResetButton>
           </div>
         </aside>

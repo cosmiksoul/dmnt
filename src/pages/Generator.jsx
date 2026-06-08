@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { L0, L1_FIELDS, L2_FIELDS, L3_FIELDS } from '../config/convention.js'
-import { buildL1, buildL2, buildL3, buildMediaCompound } from '../lib/buildNames.js'
+import { buildL1, buildL2, buildL3, buildCreativePackage } from '../lib/buildNames.js'
 import { validate } from '../lib/validate.js'
 import { useSessionState } from '../hooks/useSessionState.js'
 import LevelSection from '../components/LevelSection.jsx'
@@ -13,8 +14,13 @@ const L0_FIELD = [{ key: 'l0', label: 'Платформа', kind: 'enum', option
 export default function Generator() {
   const navigate = useNavigate()
   const [values, setValues] = useSessionState('generator:values', {})
-  const onChange = (key, val) => setValues((v) => ({ ...v, [key]: val }))
+  const onChange = (key, val) => {
+    setPacked(false)
+    setValues((v) => ({ ...v, [key]: val }))
+  }
   const reset = () => setValues({})
+
+  const [packed, setPacked] = useState(false)
 
   // Carry the convention params (L0–L3) over to the URL builder, where only
   // landing + promocode remain to be picked. We seed the URL builder's session
@@ -36,6 +42,7 @@ export default function Generator() {
   const l1 = buildL1(values)
   const l2 = buildL2(values)
   const l3 = buildL3(values)
+  const pkg = buildCreativePackage(values)
   const all = [values.l0 || '', l1, l2, l3].filter(Boolean).join(', ')
   const hasInput = Object.values(values).some((v) => (v ?? '').toString().trim() !== '')
 
@@ -65,11 +72,32 @@ export default function Generator() {
             <NamePreview label="L1" value={l1} disabled={blocked} />
             <NamePreview label="L2" value={l2} disabled={blocked} />
             <NamePreview label="L3" value={l3} disabled={blocked} />
-            {isPublisher && <NamePreview label="MEDIA" value={buildMediaCompound(values)} disabled={blocked} wrap />}
+
             <div className="border-t border-line pt-2">
               <NamePreview label="ВСЁ" value={all} disabled={blocked} wrap />
             </div>
           </ResultsPanel>
+
+          <button
+            type="button"
+            onClick={() => setPacked((p) => !p)}
+            disabled={blocked || !pkg.canonical}
+            className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg border border-accent/30 bg-accent-wash px-3 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-white disabled:cursor-not-allowed disabled:border-line disabled:bg-transparent disabled:text-ink-faint"
+          >
+            {packed ? 'Скрыть упаковку' : 'Упаковать креатив'}
+          </button>
+
+          {packed && !blocked && pkg.canonical && (
+            <div className="mt-3 space-y-2 rounded-lg border border-line bg-paper p-3">
+              <NamePreview label="ИМЯ" value={pkg.canonical} wrap />
+              <NamePreview label="ФАЙЛ" value={pkg.filename} wrap />
+              {isPublisher && (
+                <p className="text-xs leading-relaxed text-ink-muted">
+                  Для прямых медиа-закупок упаковка обязательна — это имя креатива.
+                </p>
+              )}
+            </div>
+          )}
 
           <button
             type="button"

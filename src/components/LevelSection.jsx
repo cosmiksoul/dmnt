@@ -2,23 +2,30 @@ import { OPTIONS, L0 } from '../config/convention.js'
 import FieldSelect from './FieldSelect.jsx'
 import FieldCamelText from './FieldCamelText.jsx'
 
-export default function LevelSection({ title, fields, values, onChange }) {
+export default function LevelSection({ code, title, fields, values, onChange }) {
   return (
-    <section className="rounded-lg border bg-white p-4">
-      <h2 className="mb-3 text-sm font-semibold text-slate-700">{title}</h2>
-      <div className="grid grid-cols-2 gap-3">
+    <section className="card p-5">
+      <header className="mb-4 flex items-center gap-3">
+        <span className="lvl-badge">{code}</span>
+        <h2 className="text-sm font-semibold text-ink-soft">{title}</h2>
+      </header>
+      <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
         {fields.map((f) => {
           if (f.kind === 'enum') {
-            const opts = f.options === 'l0' ? L0.map((x) => ({ code: x.code, desc: x.label })) : OPTIONS[f.options]
+            const opts =
+              f.options === 'l0' ? L0.map((x) => ({ code: x.code, desc: x.label })) : OPTIONS[f.options]
             return <FieldSelect key={f.key} field={{ ...f, opts }} value={values[f.key]} onChange={onChange} />
           }
           if (f.kind === 'date') {
             return (
-              <label key={f.key} className="block text-sm">
-                <span className="text-slate-600">{f.label}</span>
+              <label key={f.key} className="block">
+                <span className="field-label">{f.label}</span>
                 <input
-                  type="text" inputMode="numeric" maxLength={4} placeholder="ММГГ"
-                  className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5"
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={4}
+                  placeholder="ММГГ"
+                  className="field-control font-mono"
                   value={values[f.key] || ''}
                   onChange={(e) => onChange(f.key, e.target.value.replace(/\D/g, ''))}
                 />

@@ -9,6 +9,8 @@ export function isCamelClean(s) {
   return /^[A-Za-z][A-Za-z0-9]*$/.test(s)
 }
 
+// Returns issues: { field, code, severity, label?, message }.
+// code: 'required' | 'format' | 'cp' | 'length'. severity: 'error' | 'warning'.
 export function validate(values) {
   const issues = []
 
@@ -16,12 +18,12 @@ export function validate(values) {
     const raw = (values[f.key] ?? '').toString().trim()
 
     if (f.required && raw === '') {
-      issues.push({ field: f.key, severity: 'error', message: `Поле «${f.label}» обязательно.` })
+      issues.push({ field: f.key, code: 'required', severity: 'error', label: f.label, message: `Поле «${f.label}» обязательно.` })
       continue
     }
     if (f.kind === 'camelText' && raw !== '' && !isCamelClean(raw)) {
       issues.push({
-        field: f.key, severity: 'error',
+        field: f.key, code: 'format', severity: 'error', label: f.label,
         message: `«${f.label}»: только CamelCase без «_», пробелов и кириллицы (напр. GatesOfOlympus).`,
       })
     }
@@ -29,7 +31,7 @@ export function validate(values) {
 
   // Campaign required for centralized initiatives (Status = CP).
   if (values.status === 'CP' && (values.campaign ?? '').toString().trim() === '') {
-    issues.push({ field: 'campaign', severity: 'error', message: 'При статусе CP имя Campaign обязательно.' })
+    issues.push({ field: 'campaign', code: 'cp', severity: 'error', label: 'Campaign', message: 'При статусе CP имя Campaign обязательно.' })
   }
 
   // Soft length limits → warnings only.
@@ -37,11 +39,11 @@ export function validate(values) {
   const l2 = buildL2(values)
   const l3 = buildL3(values)
   if (l1.length > LIMITS.L1)
-    issues.push({ field: 'l1', severity: 'warning', message: `L1 длиннее ${LIMITS.L1} символов (${l1.length}).` })
+    issues.push({ field: 'l1', code: 'length', severity: 'warning', message: `L1 длиннее ${LIMITS.L1} символов (${l1.length}).` })
   if (l2.length > LIMITS.L2)
-    issues.push({ field: 'l2', severity: 'warning', message: `L2 длиннее ${LIMITS.L2} символов (${l2.length}).` })
+    issues.push({ field: 'l2', code: 'length', severity: 'warning', message: `L2 длиннее ${LIMITS.L2} символов (${l2.length}).` })
   if (l3.length > 0 && (l3.length < LIMITS.L3[0] || l3.length > LIMITS.L3[1]))
-    issues.push({ field: 'l3', severity: 'warning', message: `L3 обычно ${LIMITS.L3[0]}–${LIMITS.L3[1]} символов (${l3.length}).` })
+    issues.push({ field: 'l3', code: 'length', severity: 'warning', message: `L3 обычно ${LIMITS.L3[0]}–${LIMITS.L3[1]} символов (${l3.length}).` })
 
   return issues
 }

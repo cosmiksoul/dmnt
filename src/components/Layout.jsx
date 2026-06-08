@@ -6,6 +6,7 @@ const links = [
   { to: '/validator', label: 'Валидатор' },
   { to: '/reference', label: 'Справочник' },
   { to: '/methodology', label: 'Методология' },
+  { to: '/roadmap', label: 'Планы развития' },
 ]
 
 export default function Layout() {

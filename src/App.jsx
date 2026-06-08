@@ -5,6 +5,7 @@ import UrlBuilder from './pages/UrlBuilder.jsx'
 import Validator from './pages/Validator.jsx'
 import Methodology from './pages/Methodology.jsx'
 import Reference from './pages/Reference.jsx'
+import Roadmap from './pages/Roadmap.jsx'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="validator" element={<Validator />} />
           <Route path="reference" element={<Reference />} />
           <Route path="methodology" element={<Methodology />} />
+          <Route path="roadmap" element={<Roadmap />} />
         </Route>
       </Routes>
     </HashRouter>

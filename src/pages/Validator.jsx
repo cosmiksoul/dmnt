@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { parseName } from '../lib/parseName.js'
 import { parseUrl } from '../lib/parseUrl.js'
 import { describeField, FIELD_LABELS } from '../lib/describe.js'
@@ -58,28 +58,27 @@ function Block({ title, children }) {
 }
 
 export default function Validator() {
+  const [mode, setMode] = useState('L1')
+  const [input, setInput] = useState('')
+
   // The URL-builder may hand off an assembled URL via this session key.
-  // Consume it once on mount: open in URL mode, prefilled, then clear the key
-  // so a later refresh or revisit starts clean.
-  const [mode, setMode] = useState(() => {
+  // Consume it once after mount (in an effect, not a useState initializer:
+  // initializers must be pure, and StrictMode runs them twice — the second
+  // run would find the key already removed and reset the field to empty).
+  useEffect(() => {
+    let seeded = ''
     try {
-      return sessionStorage.getItem('validator:url') ? 'URL' : 'L1'
-    } catch {
-      return 'L1'
-    }
-  })
-  const [input, setInput] = useState(() => {
-    try {
-      const seeded = sessionStorage.getItem('validator:url')
-      if (seeded) {
-        sessionStorage.removeItem('validator:url')
-        return seeded
-      }
+      seeded = sessionStorage.getItem('validator:url') || ''
+      if (seeded) sessionStorage.removeItem('validator:url')
     } catch {
       /* storage unavailable */
     }
-    return ''
-  })
+    if (seeded) {
+      setInput(seeded)
+      setMode('URL')
+    }
+  }, [])
+
   const isUrl = mode === 'URL'
 
   const name = !isUrl && input ? parseName(input, mode) : null

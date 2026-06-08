@@ -44,7 +44,7 @@ function Field({ field }) {
       {field.kind === 'enum' ? (
         <CodeTable rows={OPTIONS[field.options]} />
       ) : (
-        <p className="text-xs text-ink-muted">{NOTE[field.kind]}</p>
+        <p className="text-xs text-ink-muted">{NOTE[field.kind] ?? field.kind}</p>
       )}
     </div>
   )

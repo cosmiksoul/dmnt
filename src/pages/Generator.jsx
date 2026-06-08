@@ -14,7 +14,10 @@ const L0_FIELD = [{ key: 'l0', label: 'Платформа', kind: 'enum', option
 export default function Generator() {
   const navigate = useNavigate()
   const [values, setValues] = useSessionState('generator:values', {})
-  const onChange = (key, val) => setValues((v) => ({ ...v, [key]: val }))
+  const onChange = (key, val) => {
+    setPacked(false)
+    setValues((v) => ({ ...v, [key]: val }))
+  }
   const reset = () => setValues({})
 
   const [packed, setPacked] = useState(false)

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { L0, L1_FIELDS, L2_FIELDS, L3_FIELDS } from '../config/convention.js'
+import { L1_FIELDS, L2_FIELDS, L3_FIELDS } from '../config/convention.js'
 import { LANDINGS, promocodeFor } from '../data/landings.sample.js'
 import { buildUrl } from '../lib/buildUrl.js'
 import { validate } from '../lib/validate.js'
@@ -12,7 +12,7 @@ export default function UrlBuilder() {
   const onChange = (key, val) => setValues((v) => ({ ...v, [key]: val }))
 
   const promocode = promocodeFor(landing)
-  const blocked = validate(values).some((i) => i.severity === 'error') || !landing
+  const blocked = validate(values).some((i) => i.severity === 'error') || !values.l0 || !landing
   const url = blocked ? '' : buildUrl(values, landing, promocode)
 
   return (
@@ -22,7 +22,7 @@ export default function UrlBuilder() {
       </p>
       <LevelSection title="L0 — Платформа / Вендор / Паблишер"
         fields={[{ key: 'l0', label: 'Платформа', kind: 'enum', options: 'l0', required: true }]}
-        values={values} onChange={onChange} l0Override />
+        values={values} onChange={onChange} />
       <LevelSection title="L1 — Кампания" fields={L1_FIELDS} values={values} onChange={onChange} />
       <LevelSection title="L2 — Группа объявлений" fields={L2_FIELDS} values={values} onChange={onChange} />
       <LevelSection title="L3 — Креатив" fields={L3_FIELDS} values={values} onChange={onChange} />

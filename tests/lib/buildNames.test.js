@@ -23,6 +23,10 @@ describe('buildL2', () => {
     expect(buildL2({ format: 'DSP', device: 'MOB', flow: 'W2W', placement: 'DIR', targeting: 'Feed' }))
       .toBe('DSP_MOB_W2W_DIR_Feed')
   })
+  it('builds Meta Advantage+ ad set (placement AUTO, no device)', () => {
+    expect(buildL2({ format: 'VID', flow: 'W2A', placement: 'AUTO', targeting: 'LAL1pctFTD' }))
+      .toBe('VID_W2A_AUTO_LAL1pctFTD')
+  })
 })
 
 describe('buildL3', () => {

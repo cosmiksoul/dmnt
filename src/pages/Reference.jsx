@@ -11,6 +11,9 @@ const NOTE = {
   date: 'Дата в формате ММГГ.',
 }
 
+const jump = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+const NAV_IDS = ['L0', ...LEVELS.map((l) => l.code)]
+
 function CodeTable({ rows }) {
   return (
     <table className="w-full text-sm">
@@ -31,7 +34,12 @@ function Field({ field }) {
     <div>
       <h3 className="mb-1.5 text-sm font-semibold text-ink-soft">
         {field.label}
-        {field.required ? <span className="text-accent"> *</span> : <span className="text-ink-faint"> (опц.)</span>}
+        {field.required && (
+          <>
+            <span className="text-accent" aria-hidden="true"> *</span>
+            <span className="sr-only"> обязательное</span>
+          </>
+        )}
       </h3>
       {field.kind === 'enum' ? (
         <CodeTable rows={OPTIONS[field.options]} />
@@ -43,8 +51,6 @@ function Field({ field }) {
 }
 
 export default function Reference() {
-  const jump = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header>
@@ -52,8 +58,8 @@ export default function Reference() {
         <p className="mt-1 text-sm text-ink-muted">Все коды конвенции с расшифровками, разбитые по уровням.</p>
       </header>
 
-      <nav className="flex flex-wrap gap-2">
-        {['L0', 'L1', 'L2', 'L3'].map((c) => (
+      <nav aria-label="Переход к уровню" className="flex flex-wrap gap-2">
+        {NAV_IDS.map((c) => (
           <button
             key={c}
             type="button"

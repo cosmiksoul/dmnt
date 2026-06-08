@@ -1,18 +1,23 @@
-import { useState } from 'react'
 import { L1_FIELDS, L2_FIELDS, L3_FIELDS } from '../config/convention.js'
 import { LANDINGS, promocodeFor } from '../data/landings.sample.js'
 import { buildUrl } from '../lib/buildUrl.js'
 import { validate } from '../lib/validate.js'
+import { useSessionState } from '../hooks/useSessionState.js'
 import LevelSection from '../components/LevelSection.jsx'
 import NamePreview from '../components/NamePreview.jsx'
 import ResultsPanel from '../components/ResultsPanel.jsx'
+import ResetButton from '../components/ResetButton.jsx'
 
 const L0_FIELD = [{ key: 'l0', label: 'Платформа', kind: 'enum', options: 'l0', required: true }]
 
 export default function UrlBuilder() {
-  const [values, setValues] = useState({})
-  const [landing, setLanding] = useState('')
+  const [values, setValues] = useSessionState('url:values', {})
+  const [landing, setLanding] = useSessionState('url:landing', '')
   const onChange = (key, val) => setValues((v) => ({ ...v, [key]: val }))
+  const reset = () => {
+    setValues({})
+    setLanding('')
+  }
 
   const promocode = promocodeFor(landing)
   const issues = validate(values)
@@ -22,11 +27,14 @@ export default function UrlBuilder() {
 
   return (
     <div>
-      <header className="mb-6">
-        <h1 className="text-xl font-bold tracking-tight">URL-билдер</h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          Для прямых медиа/PR-размещений без Keitaro. Заполните поля конвенции и выберите лендинг — соберём трекинг-URL.
-        </p>
+      <header className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight">URL-билдер</h1>
+          <p className="mt-1 text-sm text-ink-muted">
+            Для прямых медиа/PR-размещений без Keitaro. Заполните поля конвенции и выберите лендинг — соберём трекинг-URL.
+          </p>
+        </div>
+        <ResetButton onClick={reset} />
       </header>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -65,8 +73,11 @@ export default function UrlBuilder() {
 
         <aside className="lg:sticky lg:top-24">
           <ResultsPanel title="Трекинг-URL" issues={issues} extraMissing={extraMissing}>
-            <NamePreview label="URL" value={url} disabled={blocked} />
+            <NamePreview label="URL" value={url} disabled={blocked} wrap />
           </ResultsPanel>
+          <div className="mt-3 flex justify-end">
+            <ResetButton onClick={reset}>Начать сначала</ResetButton>
+          </div>
         </aside>
       </div>
     </div>

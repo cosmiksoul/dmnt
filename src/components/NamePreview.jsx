@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function NamePreview({ label, value, disabled }) {
+export default function NamePreview({ label, value, disabled, wrap = false }) {
   const [copied, setCopied] = useState(false)
   const empty = !value
   const off = disabled || empty
@@ -15,12 +15,18 @@ export default function NamePreview({ label, value, disabled }) {
     }
   }
   return (
-    <div className="flex items-stretch gap-2">
-      <span className="flex w-12 shrink-0 items-center font-mono text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
+    <div className={`flex gap-2 ${wrap ? 'items-start' : 'items-stretch'}`}>
+      <span
+        className={`flex w-12 shrink-0 font-mono text-[11px] font-semibold uppercase tracking-wide text-ink-faint ${
+          wrap ? 'pt-2.5' : 'items-center'
+        }`}
+      >
         {label}
       </span>
       <code
-        className={`code-chip flex-1 overflow-x-auto whitespace-nowrap ${off ? 'text-ink-faint' : 'text-ink'}`}
+        className={`code-chip min-w-0 flex-1 ${off ? 'text-ink-faint' : 'text-ink'} ${
+          wrap ? 'whitespace-pre-wrap break-all' : 'overflow-x-auto whitespace-nowrap'
+        }`}
       >
         {value || '—'}
       </code>
@@ -30,7 +36,9 @@ export default function NamePreview({ label, value, disabled }) {
         disabled={off}
         title="Копировать"
         aria-label="Копировать"
-        className={`flex w-10 shrink-0 items-center justify-center rounded-lg border text-xs transition-colors ${
+        className={`flex w-10 shrink-0 items-center justify-center self-start rounded-lg border text-xs transition-colors ${
+          wrap ? 'h-[38px]' : 'self-stretch'
+        } ${
           off
             ? 'border-line text-ink-faint'
             : 'border-accent/30 bg-accent-wash text-accent hover:bg-accent hover:text-white'

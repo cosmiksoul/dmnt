@@ -4,8 +4,8 @@ const links = [
   { to: '/', label: 'Генератор', end: true },
   { to: '/url', label: 'URL-билдер' },
   { to: '/validator', label: 'Валидатор' },
-  { to: '/methodology', label: 'Методология' },
   { to: '/reference', label: 'Справочник' },
+  { to: '/methodology', label: 'Методология' },
 ]
 
 export default function Layout() {

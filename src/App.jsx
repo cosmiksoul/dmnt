@@ -14,8 +14,8 @@ export default function App() {
           <Route index element={<Generator />} />
           <Route path="url" element={<UrlBuilder />} />
           <Route path="validator" element={<Validator />} />
-          <Route path="methodology" element={<Methodology />} />
           <Route path="reference" element={<Reference />} />
+          <Route path="methodology" element={<Methodology />} />
         </Route>
       </Routes>
     </HashRouter>

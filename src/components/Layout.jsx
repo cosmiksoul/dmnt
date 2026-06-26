@@ -16,10 +16,10 @@ export default function Layout() {
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-3 sm:flex-row sm:items-center sm:gap-8">
           <div className="flex items-center gap-2.5">
             <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-accent font-mono text-xs font-bold text-white">
-              B
+              N
             </span>
             <span className="font-semibold tracking-tight">
-              Betera <span className="font-normal text-ink-muted">Naming Tool</span>
+              Naming <span className="font-normal text-ink-muted">Tool</span>
             </span>
           </div>
           <nav className="flex flex-wrap gap-1 text-sm">

@@ -21,7 +21,7 @@ describe('buildUrl', () => {
     expect(url).toContain('promocode=OLYMP100500')
   })
   it('omits promocode when empty', () => {
-    const url = buildUrl(v, 'betera_pass', '')
+    const url = buildUrl(v, 'demo_pass', '')
     expect(url).not.toContain('promocode=')
   })
 })

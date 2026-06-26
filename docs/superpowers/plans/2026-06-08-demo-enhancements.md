@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a parameter reference page, a creative-packaging button in the Generator, and a roadmap page to the Betera naming demo.
+**Goal:** Add a parameter reference page, a creative-packaging button in the Generator, and a roadmap page to the naming demo.
 
 **Architecture:** Static React (Vite + Tailwind + HashRouter), config-driven. Two new read-only pages wired into the existing nav/router; one new pure lib function (`buildCreativePackage`) with tests, surfaced by a button in the Generator. No backend.
 

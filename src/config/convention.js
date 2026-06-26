@@ -1,4 +1,4 @@
-// Single source of truth for the Betera naming convention (Excel v3).
+// Single source of truth for the naming convention (Excel v3).
 // Changing dictionary values here is the ONLY edit needed when the convention evolves.
 
 // L0 — platform/vendor/publisher (metadata, NOT part of any name).

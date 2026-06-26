@@ -1,8 +1,8 @@
-# Betera Naming Tool Implementation Plan
+# Naming Tool Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a stateless, config-driven web tool that lets a media buyer pick values from dropdowns and get convention-correct Betera campaign names (L0–L3) plus a tracking URL, with validation that makes convention errors impossible.
+**Goal:** Build a stateless, config-driven web tool that lets a media buyer pick values from dropdowns and get convention-correct campaign names (L0–L3) plus a tracking URL, with validation that makes convention errors impossible.
 
 **Architecture:** Single `src/config/convention.js` is the source of truth (fields, dictionaries, UTM mapping, limits). Pure functions in `src/lib/` (TDD, unit-tested against golden examples from the Excel "Примеры" sheet) build/validate/parse names and URLs. React UI (4 routes via HashRouter) reads the config and lib; UI is build-and-verify, no unit tests (matches stat_plan convention). Static, deploys to GitHub Pages.
 
@@ -21,7 +21,7 @@ Spec: `docs/superpowers/specs/2026-06-08-naming-tool-design.md`. Source of schem
 
 ```json
 {
-  "name": "betera-naming-tool",
+  "name": "naming-tool",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -90,7 +90,7 @@ export default { plugins: { tailwindcss: {}, autoprefixer: {} } }
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Betera Naming Tool</title>
+    <title>Naming Tool</title>
   </head>
   <body>
     <div id="root"></div>
@@ -123,7 +123,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 `src/App.jsx` (placeholder shell, replaced in Task 8):
 ```jsx
 export default function App() {
-  return <div className="p-8 text-lg">Betera Naming Tool</div>
+  return <div className="p-8 text-lg">Naming Tool</div>
 }
 ```
 
@@ -154,7 +154,7 @@ No tests in this task — it is plain data, exercised by lib tests in later task
 - [ ] **Step 1: Write `src/config/convention.js`**
 
 ```js
-// Single source of truth for the Betera naming convention (Excel v3).
+// Single source of truth for the naming convention (Excel v3).
 // Changing dictionary values here is the ONLY edit needed when the convention evolves.
 
 // L0 — platform/vendor/publisher (metadata, NOT part of any name).
@@ -757,7 +757,7 @@ export const LANDINGS = [
   { slug: 'general_registration', label: 'Общая регистрация', promocode: 'WELCOME500' },
   { slug: 'sport_welcome', label: 'Спорт welcome', promocode: 'SPORT100' },
   { slug: 'casino_bonus_100_500', label: 'Казино бонус 100+500', promocode: 'CAS100500' },
-  { slug: 'betera_pass', label: 'Betera Pass', promocode: '' },
+  { slug: 'demo_pass', label: 'Demo Pass', promocode: '' },
 ]
 
 export const promocodeFor = (slug) => (LANDINGS.find((l) => l.slug === slug)?.promocode ?? '')
@@ -790,7 +790,7 @@ describe('buildUrl', () => {
     expect(url).toContain('promocode=OLYMP100500')
   })
   it('omits promocode when empty', () => {
-    const url = buildUrl(v, 'betera_pass', '')
+    const url = buildUrl(v, 'demo_pass', '')
     expect(url).not.toContain('promocode=')
   })
 })
@@ -870,7 +870,7 @@ export default function Layout() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b bg-white">
         <div className="mx-auto max-w-4xl px-4 py-3 flex items-center gap-6">
-          <span className="font-semibold">Betera Naming Tool</span>
+          <span className="font-semibold">Naming Tool</span>
           <nav className="flex gap-4 text-sm">
             {links.map((l) => (
               <NavLink
@@ -1247,7 +1247,7 @@ Run: `npm run dev` → open `#/url`.
 Checks:
 - Fill L0=kufar + valid L1/L2/L3, pick landing "Gates of Olympus" → URL line shows full URL
   containing `utm_source=kufar`, `utm_campaign=…`, `utm_medium=display`, `t_group=media`, `conv=1`, `promocode=OLYMP100500`.
-- Pick landing "Betera Pass" (no promocode) → URL has no `promocode=`.
+- Pick landing "Demo Pass" (no promocode) → URL has no `promocode=`.
 - Clear a required field → URL line disables.
 
 - [ ] **Step 3: Commit**
@@ -1349,7 +1349,7 @@ export default function Methodology() {
     <article className="prose-sm max-w-none space-y-6 text-sm leading-relaxed">
       <section>
         <h1 className="text-lg font-semibold">Зачем единая конвенция</h1>
-        <p>Betera ведёт платное привлечение на 8+ рекламных платформах с разным именованием.
+        <p>Компания ведёт платное привлечение на 8+ рекламных платформах с разным именованием.
           Имена кампаний не совпадают с UTM, а те — с полями Mktg Info Lite. Кросс-платформенный
           анализ делается вручную. Конвенция даёт машиночитаемые, единые на всех платформах имена.</p>
       </section>
@@ -1449,9 +1449,9 @@ jobs:
 - [ ] **Step 2: Write `README.md`**
 
 ```markdown
-# Betera Naming Tool
+# Naming Tool
 
-Веб-инструмент для генерации имён рекламных кампаний по единой конвенции Betera (L0–L3),
+Веб-инструмент для генерации имён рекламных кампаний по единой конвенции (L0–L3),
 сборки трекинг-URL для Media/PR и валидации существующих имён.
 
 ## Стек
@@ -1478,7 +1478,7 @@ UI — 4 роута: Генератор (`/`), URL-билдер (`/url`), Вал
 # Claude Code — контекст проекта
 
 ## Что это
-Веб-инструмент генерации имён рекламных кампаний Betera по конвенции L0–L3 + URL-билдер + валидатор.
+Веб-инструмент генерации имён рекламных кампаний по конвенции L0–L3 + URL-билдер + валидатор.
 Демо, выкатывается на GitHub Pages. Stateless.
 
 ## Источник правды схемы

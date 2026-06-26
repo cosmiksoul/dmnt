@@ -5,7 +5,7 @@ export const LANDINGS = [
   { slug: 'general_registration', label: 'Общая регистрация', promocode: 'WELCOME500' },
   { slug: 'sport_welcome', label: 'Спорт welcome', promocode: 'SPORT100' },
   { slug: 'casino_bonus_100_500', label: 'Казино бонус 100+500', promocode: 'CAS100500' },
-  { slug: 'betera_pass', label: 'Betera Pass', promocode: '' },
+  { slug: 'demo_pass', label: 'Demo Pass', promocode: '' },
 ]
 
 export const promocodeFor = (slug) => (LANDINGS.find((l) => l.slug === slug)?.promocode ?? '')
